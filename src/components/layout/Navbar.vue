@@ -106,6 +106,10 @@ const logout = async () => {
               </span>
             </div>
 
+            <div class="px-4 py-3 text-sm text-gray-700 border-b">
+              <a href="/admin">Dashboard</a>
+            </div>
+
             <button
               @click="logout"
               class="flex items-center gap-2 w-full px-4 py-2 text-sm text-red-600 hover:bg-gray-100"

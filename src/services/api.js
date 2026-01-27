@@ -11,7 +11,7 @@ const api = axios.create({
 // --- INTERCEPTOR (PENTING!) ---
 api.interceptors.request.use(config => {
     // Cek apakah ada token di LocalStorage
-    const token = localStorage.getItem('auth_token');
+    const token = localStorage.getItem('token');
 
     // Jika ada, tambahkan ke Header Authorization
     if (token) {

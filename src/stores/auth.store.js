@@ -80,6 +80,23 @@ export const useAuthStore = defineStore('auth', {
             }
         },
 
+        async fetchUser() {
+            if (!this.token) {
+                this.user = null
+                return
+            }
+
+            try {
+                const res = await authServices.me()
+                this.user = res.data
+            } catch (error) {
+                this.handleError(error)
+                this.user = null
+                this.token = null
+                localStorage.removeItem('token')
+            }
+        },
+
         // ✅ Handle error dengan baik
         handleError(error) {
             console.error('API Error:', error)
