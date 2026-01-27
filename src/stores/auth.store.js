@@ -1,18 +1,17 @@
-// src/stores/auth.store.js
-
 import { defineStore } from 'pinia'
 import * as authServices from '@/services/auth.service'
 
 export const useAuthStore = defineStore('auth', {
     state: () => ({
         user: null,
+        token: localStorage.getItem('token') || null,
         loading: false,
         error: null,
         validationErrors: null, // ✅ Tambahkan untuk validasi errors
     }),
 
     getters: {
-        isAuthenticated: (state) => !!state.user,
+        isAuthenticated: (state) => !!state.token,
         hasError: (state) => !!state.error,
         getValidationError: (state) => (field) => {
             return state.validationErrors?.[field]?.[0] || null
@@ -30,9 +29,20 @@ export const useAuthStore = defineStore('auth', {
             this.loading = true
 
             try {
-                await authServices.csrf()
+                // await authServices.csrf()
                 const res = await authServices.login(form)
-                this.user = res.data.user || res.data
+                // Simpan token dan user
+                this.token = res.data.access_token
+                this.user = res.data.user
+
+                // Simpan token ke localStorage
+                localStorage.setItem('token', this.token)
+
+                // Set header Authorization untuk request selanjutnya
+                // this.setAuthHeader()
+
+                console.log('Login successful, token saved:', this.token, this.user)
+                return res
             } catch (error) {
                 this.handleError(error)
                 throw error
@@ -46,7 +56,7 @@ export const useAuthStore = defineStore('auth', {
             this.loading = true
 
             try {
-                await authServices.csrf()
+                // await authServices.csrf()
                 const res = await authServices.register(form)
                 this.user = res.data.user || res.data
             } catch (error) {
@@ -64,6 +74,8 @@ export const useAuthStore = defineStore('auth', {
                 console.error('Logout error:', error)
             } finally {
                 this.user = null
+                this.token = null
+                localStorage.removeItem('token')
                 this.clearErrors()
             }
         },

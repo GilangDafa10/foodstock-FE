@@ -1,3 +1,9 @@
+<script setup>
+import DashboardLayout from "@/layouts/DashboardLayout.vue";
+</script>
+
 <template>
-  <main class="flex-1"></main>
+  <DashboardLayout>
+    <div class="p-4">Dashboard Content</div>
+  </DashboardLayout>
 </template>

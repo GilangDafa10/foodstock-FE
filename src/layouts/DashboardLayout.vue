@@ -1,3 +1,10 @@
+<script setup>
+import Sidebar from "@/components/layout/Sidebar.vue";
+</script>
+
 <template>
-  <header>Navbar</header>
+  <Sidebar />
+  <main class="flex-1">
+    <slot />
+  </main>
 </template>
