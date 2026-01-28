@@ -1,10 +1,14 @@
 <script setup>
 import Sidebar from "@/components/layout/Sidebar.vue";
+import Topbar from "@/components/layout/Topbar.vue";
 </script>
 
 <template>
-  <Sidebar />
-  <main class="flex-1">
-    <slot />
-  </main>
+  <section class="flex">
+    <Sidebar />
+    <main class="flex-1">
+      <Topbar />
+      <router-view />
+    </main>
+  </section>
 </template>

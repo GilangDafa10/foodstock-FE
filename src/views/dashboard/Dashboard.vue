@@ -3,7 +3,5 @@ import DashboardLayout from "@/layouts/DashboardLayout.vue";
 </script>
 
 <template>
-  <DashboardLayout>
-    <div class="p-4">Dashboard Content</div>
-  </DashboardLayout>
+  <div class="p-4 bg-amber-300">Dashboard Content</div>
 </template>

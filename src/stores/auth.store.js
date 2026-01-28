@@ -81,10 +81,17 @@ export const useAuthStore = defineStore('auth', {
         },
 
         async fetchUser() {
+            // 1. Cek Safety: Jangan fetch jika tidak ada token
             if (!this.token) {
                 this.user = null
                 return
             }
+            // 2. Cek Safety: Jangan fetch jika user SUDAH ada (ini mencegah spamming juga)
+            if (this.user) {
+                return
+            }
+            // 3. SET LOADING TRUE (Ini yang kurang sebelumnya)
+            this.loading = true
 
             try {
                 const res = await authServices.me()
@@ -94,6 +101,9 @@ export const useAuthStore = defineStore('auth', {
                 this.user = null
                 this.token = null
                 localStorage.removeItem('token')
+            } finally {
+                // 4. SET LOADING FALSE SETELAH SELESAI
+                this.loading = false
             }
         },
 

@@ -107,7 +107,7 @@ const logout = async () => {
             </div>
 
             <div class="px-4 py-3 text-sm text-gray-700 border-b">
-              <a href="/admin">Dashboard</a>
+              <RouterLink to="/admin">Dashboard</RouterLink>
             </div>
 
             <button
