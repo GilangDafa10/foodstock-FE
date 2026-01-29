@@ -12,6 +12,8 @@ import Register from '@/views/auth/Register.vue'
 import Dashboard from '@/views/dashboard/Dashboard.vue'
 import Product from '@/views/dashboard/product/Product.vue'
 import Category from '@/views/dashboard/category/Category.vue'
+import Stock from '@/views/dashboard/stock/Stock.vue'
+import Order from '@/views/dashboard/order/Order.vue'
 import { me } from '../services/auth.service'
 
 const router = createRouter({
@@ -39,6 +41,8 @@ const router = createRouter({
                 { path: 'dashboard', component: Dashboard },
                 { path: 'products', component: Product },
                 { path: 'categories', component: Category },
+                { path: 'stocks', component: Stock },
+                { path: 'orders', component: Order }
             ]
         }
     ]

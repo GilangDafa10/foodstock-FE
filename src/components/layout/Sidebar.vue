@@ -20,10 +20,10 @@ const menuItems = [
   { label: "Categories", path: "/admin/categories", icon: ListOrdered },
   {
     label: "Stock Adjustments",
-    path: "/",
+    path: "/admin/stocks",
     icon: Activity,
   },
-  { label: "Order", path: "/", icon: ListOrdered },
+  { label: "Order", path: "/admin/orders", icon: ListOrdered },
 ];
 
 const logout = async () => {
