@@ -1,14 +1,15 @@
+<script setup>
+import HeroBg from "@/assets/HeroBg.jpg";
+</script>
+
 <template>
   <div class="relative min-h-screen pt-48 bg-black">
     <div class="absolute inset-0">
-      <img
-        class="object-cover w-full h-full"
-        src="https://cdn.rareblocks.xyz/collection/bakerstreet/images/hero/2/background.png"
-        alt=""
-      />
+      <img class="object-cover w-full h-full" :src="HeroBg" alt="" />
+      <div class="bg-black/50 w-full h-full absolute inset-0"></div>
     </div>
 
-    <div class="relative">
+    <div class="relative z-10">
       <div class="px-6 mx-auto sm:px-8 lg:px-12 max-w-7xl">
         <div class="max-w-xl mx-auto text-center">
           <h1 class="tracking-tighter text-white">
