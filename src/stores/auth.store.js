@@ -38,9 +38,6 @@ export const useAuthStore = defineStore('auth', {
                 // Simpan token ke localStorage
                 localStorage.setItem('token', this.token)
 
-                // Set header Authorization untuk request selanjutnya
-                // this.setAuthHeader()
-
                 console.log('Login successful, token saved:', this.token, this.user)
                 return res
             } catch (error) {

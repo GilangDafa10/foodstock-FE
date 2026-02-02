@@ -1,10 +1,18 @@
 <script setup>
-import { ref } from "vue";
+import { ref, computed } from "vue";
 import { ChefHat, User, LogOut } from "lucide-vue-next";
 import { useAuthStore } from "@/stores/auth.store";
+import { useRoleNavigation } from "@/utils/useRoleNavigation";
 
 const auth = useAuthStore();
 const showDropdown = ref(false);
+const { getPageByRole } = useRoleNavigation();
+
+// Navigasi dinamis berdasarkan role user
+const dashboardLink = computed(() => {
+  if (!auth.user?.role_id) return "/";
+  return getPageByRole(auth.user.role_id);
+});
 
 const logout = async () => {
   await auth.logout();
@@ -107,7 +115,7 @@ const logout = async () => {
             </div>
 
             <div class="px-4 py-3 text-sm text-gray-700 border-b">
-              <RouterLink to="/admin">Dashboard</RouterLink>
+              <RouterLink :to="dashboardLink">Dashboard</RouterLink>
             </div>
 
             <button

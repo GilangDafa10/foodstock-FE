@@ -1,48 +1,77 @@
 import { createRouter, createWebHistory } from 'vue-router'
 import { useAuthStore } from '@/stores/auth.store'
+import { ROLES } from '@/utils/roles'
 
-// Halaman Utama
-import Home from '@/pages/Home.vue'
-
+// Layouts
 import AuthLayout from '@/layouts/AuthLayout.vue'
 import DashboardLayout from '@/layouts/DashboardLayout.vue'
 
+// Pages
+import Home from '@/pages/Home.vue'
 import Login from '@/views/auth/Login.vue'
 import Register from '@/views/auth/Register.vue'
+import Customer from '@/layouts/CustomerLayout.vue'
+import CustomerPage from '@/pages/Customer.vue'
+import CustomerOrder from '@/pages/CustOrders.vue'
+import CustomerAddress from '@/pages/CustAddress.vue'
+
+// Admin Pages
 import Dashboard from '@/views/dashboard/Dashboard.vue'
 import Product from '@/views/dashboard/product/Product.vue'
 import Category from '@/views/dashboard/category/Category.vue'
 import Stock from '@/views/dashboard/stock/Stock.vue'
 import Order from '@/views/dashboard/order/Order.vue'
-import { me } from '../services/auth.service'
 
 const router = createRouter({
     history: createWebHistory(),
     routes: [
+        // ================= PUBLIC =================
         {
             path: '/',
-            children: [
-                { path: '', component: Home }
-            ]
+            component: Home,
+            meta: { public: true }
         },
+
+        // ================= AUTH =================
         {
             path: '/auth',
             component: AuthLayout,
+            meta: { public: true },
             children: [
                 { path: 'login', component: Login },
                 { path: 'register', component: Register }
             ]
         },
+
+        // ================= ADMIN =================
         {
             path: '/admin',
             component: DashboardLayout,
-            meta: { auth: true },
+            meta: {
+                requiresAuth: true,
+                role: ROLES.ADMIN
+            },
             children: [
                 { path: 'dashboard', component: Dashboard },
                 { path: 'products', component: Product },
                 { path: 'categories', component: Category },
                 { path: 'stocks', component: Stock },
                 { path: 'orders', component: Order }
+            ]
+        },
+
+        // ================= CUSTOMER =================
+        {
+            path: '/customer',
+            component: Customer,
+            meta: {
+                requiresAuth: true,
+                role: ROLES.CUSTOMER
+            },
+            children: [
+                { path: 'profile', component: CustomerPage },
+                { path: 'orders', component: CustomerOrder },
+                { path: 'address', component: CustomerAddress }
             ]
         }
     ]
@@ -51,23 +80,32 @@ const router = createRouter({
 router.beforeEach(async (to, from, next) => {
     const auth = useAuthStore()
 
-    // Cek apakah punya token tapi data user belum ada
-    const hasToken = localStorage.getItem('token') || auth.token
-    const isUserMissing = !auth.user
-    const isNotLoading = !auth.loading // Ini sekarang akan bekerja karena store sudah diperbaiki
+    const hasToken = localStorage.getItem('token')
+    const requiredRole = to.meta.role
 
-    // Logika Fetching
-    if (hasToken && isUserMissing && isNotLoading) {
+    if (hasToken && !auth.user && !auth.loading) {
         await auth.fetchUser()
     }
 
-    // Logika Proteksi Halaman (Redirect jika gagal auth)
-    if (to.meta.auth && !auth.isAuthenticated) {
+    if (to.meta.requiresAuth && !auth.isAuthenticated) {
         return next('/auth/login')
     }
 
-    // Lanjut
+    if (requiredRole) {
+        const userRoleId = auth.user?.role_id
+
+        if (Array.isArray(requiredRole)) {
+            if (!requiredRole.includes(userRoleId)) {
+                return next('/')
+            }
+        } else {
+            if (userRoleId !== requiredRole) {
+                return next('/')
+            }
+        }
+    }
+
     next()
 })
 
-export default router;
+export default router

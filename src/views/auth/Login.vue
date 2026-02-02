@@ -3,9 +3,11 @@ import { reactive, ref } from "vue";
 import { useAuthStore } from "@/stores/auth.store";
 import { useRouter } from "vue-router";
 import { Eye, EyeOff } from "lucide-vue-next";
+import { useRoleNavigation } from "@/utils/useRoleNavigation";
 
 const router = useRouter();
 const auth = useAuthStore();
+const { getPageByRole } = useRoleNavigation();
 
 const form = reactive({
   email: "",
@@ -51,7 +53,8 @@ const submit = async () => {
 
   try {
     await auth.login(form);
-    router.push("/");
+    const redirectPath = getPageByRole(auth.user.role_id);
+    router.push(redirectPath);
   } catch (error) {
     if (error.response?.status === 401) {
       errorMessage.value =
