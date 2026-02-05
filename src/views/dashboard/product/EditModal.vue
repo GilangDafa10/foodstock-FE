@@ -1,5 +1,5 @@
 <script setup>
-import { reactive, ref, watch, onMounted } from "vue";
+import { reactive, ref, watch } from "vue";
 import { X, Loader2, UploadCloud, Trash2 } from "lucide-vue-next";
 import productService from "@/services/product.service";
 import api from "@/services/api";
@@ -123,9 +123,14 @@ const handleSubmit = async () => {
   }
 };
 
-onMounted(() => {
-  fetchCategories();
-});
+watch(
+  () => props.show,
+  (newVal) => {
+    if (newVal && categories.value.length === 0) {
+      fetchCategories();
+    }
+  },
+);
 </script>
 
 <template>

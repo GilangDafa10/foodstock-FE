@@ -9,22 +9,27 @@ import {
   Package,
 } from "lucide-vue-next";
 
-// Import Service & Modals
-import productService from "@/services/product.service";
+// 👉 PINIA STORE
+import ProductStore from "@/stores/product.store";
+
+// Modals
 import ProductCreateModal from "./CreateModal.vue";
 import ProductEditModal from "./EditModal.vue";
 
-// --- STATE ---
-const products = ref([]);
+// --- STORE ---
+const productStore = ProductStore();
+
+// --- LOCAL UI STATE ---
 const isLoading = ref(false);
 const searchQuery = ref("");
 
-// State Modal
 const showCreateModal = ref(false);
 const showEditModal = ref(false);
-const selectedProduct = ref(null); // Menyimpan data produk yang sedang diedit
+const selectedProduct = ref(null);
 
 // --- COMPUTED ---
+const products = computed(() => productStore.products);
+
 const filteredProducts = computed(() => {
   if (!searchQuery.value) return products.value;
   return products.value.filter((p) =>
@@ -45,9 +50,8 @@ const formatRupiah = (value) => {
 const fetchProducts = async () => {
   isLoading.value = true;
   try {
-    const res = await productService.getAll();
-    // Sesuaikan dengan respon API (res.data atau res.data.data)
-    products.value = res.data.data || res.data;
+    // ADMIN → tanpa force, gunakan cache jika sudah ada
+    await productStore.fetchProduct();
   } catch (error) {
     console.error("Gagal ambil data:", error);
   } finally {
@@ -55,37 +59,31 @@ const fetchProducts = async () => {
   }
 };
 
-// Handle Open Create Modal
 const openCreate = () => {
   showCreateModal.value = true;
 };
 
-// Handle Open Edit Modal
 const openEdit = (product) => {
   selectedProduct.value = product;
   showEditModal.value = true;
 };
 
-// Handle Delete
 const confirmDelete = async (id) => {
   if (!confirm("Yakin ingin menghapus produk ini?")) return;
   try {
-    await productService.delete(id);
-    products.value = products.value.filter((p) => p.id !== id);
+    await productStore.deleteProduct(id);
   } catch (error) {
     console.error("Error delete:", error);
     alert("Gagal menghapus produk.");
   }
 };
 
-// Callback saat Sukses Create/Edit
-const handleSuccess = () => {
-  fetchProducts(); // Refresh data tabel
+// Callback sukses create / edit
+const handleSuccess = async () => {
+  await fetchProducts();
 };
 
-onMounted(() => {
-  fetchProducts();
-});
+onMounted(fetchProducts);
 </script>
 
 <template>

@@ -7,7 +7,8 @@ export const useAuthStore = defineStore('auth', {
         token: localStorage.getItem('token') || null,
         loading: false,
         error: null,
-        validationErrors: null, // ✅ Tambahkan untuk validasi errors
+        validationErrors: null,
+        fetchUserAttempted: false, // ← Flag untuk mencegah duplicate fetch
     }),
 
     getters: {
@@ -78,17 +79,27 @@ export const useAuthStore = defineStore('auth', {
         },
 
         async fetchUser() {
-            // 1. Cek Safety: Jangan fetch jika tidak ada token
+            // 1. Cek Safety: Jangan fetch jika sudah pernah dicoba
+            if (this.fetchUserAttempted) {
+                return
+            }
+
+            // 2. Cek Safety: Jangan fetch jika tidak ada token
             if (!this.token) {
                 this.user = null
+                this.fetchUserAttempted = true
                 return
             }
-            // 2. Cek Safety: Jangan fetch jika user SUDAH ada (ini mencegah spamming juga)
+
+            // 3. Cek Safety: Jangan fetch jika user SUDAH ada
             if (this.user) {
+                this.fetchUserAttempted = true
                 return
             }
-            // 3. SET LOADING TRUE (Ini yang kurang sebelumnya)
+
+            // 4. SET LOADING TRUE
             this.loading = true
+            this.fetchUserAttempted = true
 
             try {
                 const res = await authServices.me()

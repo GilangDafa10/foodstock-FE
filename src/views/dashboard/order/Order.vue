@@ -132,7 +132,7 @@ onMounted(() => {
               <td
                 class="px-6 py-4 font-medium text-gray-700 dark:text-gray-300"
               >
-                {{ order.order_date }}
+                {{ new Date(order.order_date).toLocaleDateString() }}
               </td>
               <td
                 class="px-6 py-4 font-medium text-gray-700 dark:text-gray-300"

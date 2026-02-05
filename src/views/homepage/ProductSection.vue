@@ -1,66 +1,19 @@
 <script setup>
 import { ref, onMounted } from "vue";
-import ProductService from "@/services/product.service";
-const products = ref([]);
-onMounted(async () => {
-  try {
-    const response = await ProductService.getAll();
-    products.value = response.data || response.data.data;
-  } catch (error) {
-    console.error("Error fetching products:", error);
-  }
-});
+// import ProductService from "@/services/product.service";
+import ProductStore from "@/stores/product.store";
 
-// const products = ref([
-//   {
-//     id: 1,
-//     name: "Fresh Apples",
-//     description: "Crisp and juicy apples picked at peak ripeness.",
-//     price: 3.99,
-//     image:
-//       "https://images.unsplash.com/photo-1567306226416-28f0efdc88ce?auto=format&fit=crop&w=800&q=60",
-//   },
-//   {
-//     id: 2,
-//     name: "Organic Bananas",
-//     description: "Sweet and creamy organic bananas full of flavor.",
-//     price: 1.29,
-//     image:
-//       "https://images.unsplash.com/photo-1574226516831-e1dff420e43e?auto=format&fit=crop&w=800&q=60",
-//   },
-//   {
-//     id: 3,
-//     name: "Fresh Strawberries",
-//     description: "Bright red strawberries bursting with sweetness.",
-//     price: 4.49,
-//     image:
-//       "https://images.unsplash.com/photo-1501004318641-b39e6451bec6?auto=format&fit=crop&w=800&q=60",
-//   },
-//   {
-//     id: 4,
-//     name: "Juicy Oranges",
-//     description: "Tangy and refreshing oranges full of vitamin C.",
-//     price: 2.99,
-//     image:
-//       "https://images.unsplash.com/photo-1502741338009-cac2772e18bc?auto=format&fit=crop&w=800&q=60",
-//   },
-//   {
-//     id: 5,
-//     name: "Fresh Blueberries",
-//     description: "Plump blueberries packed with antioxidants.",
-//     price: 5.99,
-//     image:
-//       "https://images.unsplash.com/photo-1510626176961-4bfb7c8f0b4e?auto=format&fit=crop&w=800&q=60",
-//   },
-//   {
-//     id: 6,
-//     name: "Ripe Mangoes",
-//     description: "Sweet and succulent mangoes perfect for any occasion.",
-//     price: 3.49,
-//     image:
-//       "https://images.unsplash.com/photo-1504674900247-0877df9cc836?auto=format&fit=crop&w=800&q=60",
-//   },
-// ]);
+const productStore = ProductStore();
+
+onMounted(async () => {
+  await productStore.fetchProduct();
+  // try {
+  //   const response = await ProductService.getAll();
+  //   products.value = response.data || response.data.data;
+  // } catch (error) {
+  //   console.error("Error fetching products:", error);
+  // }
+});
 </script>
 
 <template>
@@ -76,7 +29,7 @@ onMounted(async () => {
     </p>
     <div class="grid grid-cols-1 gap-8 mt-12 sm:grid-cols-2">
       <div
-        v-for="product in products"
+        v-for="product in productStore.products"
         :key="product.id"
         class="grid grid-cols-2 items-center overflow-hidden bg-white rounded-lg shadow-lg"
       >

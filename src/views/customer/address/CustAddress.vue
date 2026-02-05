@@ -2,9 +2,16 @@
 import { Loader2 } from "lucide-vue-next";
 import { ref, onMounted } from "vue";
 import CustService from "@/services/customer.service";
+import CreateModal from "./CreateModal.vue";
+import EditModal from "./EditModal.vue";
 
 const addresses = ref([]);
 const loading = ref(true);
+
+// state untuk modal
+const showCreateModal = ref(false);
+const showEditModal = ref(false);
+const selectedAddress = ref(null);
 
 const fetchAddresses = async () => {
   loading.value = true;
@@ -16,6 +23,27 @@ const fetchAddresses = async () => {
   } finally {
     loading.value = false;
   }
+};
+
+const deleteAddress = async (addressId) => {
+  if (!confirm("Yakin ingin menghapus alamat ini?")) return;
+  try {
+    await CustService.deleteAddress(addressId);
+    addresses.value = addresses.value.filter(
+      (address) => address.id !== addressId,
+    );
+  } catch (error) {
+    console.error("Failed to delete address:", error);
+  }
+};
+
+const openCreateModal = () => {
+  showCreateModal.value = true;
+};
+
+const openEditModal = (address) => {
+  selectedAddress.value = address;
+  showEditModal.value = true;
 };
 
 onMounted(() => {
@@ -33,7 +61,8 @@ onMounted(() => {
       </div>
 
       <button
-        class="px-4 py-2 bg-gray-800 text-white rounded-lg hover:bg-gray-900"
+        @click="openCreateModal"
+        class="cursor-pointer px-4 py-2 bg-gray-800 text-white rounded-lg hover:bg-gray-900"
       >
         + Add Address
       </button>
@@ -49,7 +78,7 @@ onMounted(() => {
       v-else-if="addresses.length === 0"
       class="py-10 text-center text-gray-500"
     >
-      You have no saved addresses.
+      Kamu belum memiliki alamat pengiriman.
     </div>
 
     <!-- Address List -->
@@ -82,11 +111,13 @@ onMounted(() => {
         <!-- Actions -->
         <div class="mt-4 flex gap-3 text-sm">
           <button
+            @click="openEditModal(address)"
             class="cursor-pointer bg-gray-900 px-3 py-1 rounded-lg text-white hover:bg-gray-800"
           >
             Edit
           </button>
           <button
+            @click="deleteAddress(address.id)"
             class="cursor-pointer bg-red-600 px-3 py-1 rounded-lg text-white hover:bg-red-700"
           >
             Hapus
@@ -94,5 +125,19 @@ onMounted(() => {
         </div>
       </div>
     </div>
+
+    <!-- Create Address Modal -->
+    <CreateModal
+      :show="showCreateModal"
+      @close="showCreateModal = false"
+      @success="fetchAddresses"
+    />
+
+    <EditModal
+      :show="showEditModal"
+      :address-data="selectedAddress"
+      @close="showEditModal = false"
+      @success="fetchAddresses"
+    />
   </div>
 </template>

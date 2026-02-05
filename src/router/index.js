@@ -12,8 +12,10 @@ import Login from '@/views/auth/Login.vue'
 import Register from '@/views/auth/Register.vue'
 import Customer from '@/layouts/CustomerLayout.vue'
 import CustomerPage from '@/pages/Customer.vue'
-import CustomerOrder from '@/pages/CustOrders.vue'
-import CustomerAddress from '@/pages/CustAddress.vue'
+
+// Customer Pages
+import CustomerOrder from '@/views/customer/CustOrders.vue'
+import CustomerAddress from '@/views/customer/address/CustAddress.vue'
 
 // Admin Pages
 import Dashboard from '@/views/dashboard/Dashboard.vue'
@@ -83,7 +85,8 @@ router.beforeEach(async (to, from, next) => {
     const hasToken = localStorage.getItem('token')
     const requiredRole = to.meta.role
 
-    if (hasToken && !auth.user && !auth.loading) {
+    // Fetch user hanya sekali saat ada token dan belum pernah dicoba
+    if (hasToken && !auth.fetchUserAttempted) {
         await auth.fetchUser()
     }
 
