@@ -11,6 +11,7 @@ const props = defineProps({
 const emit = defineEmits(["close", "success"]);
 
 const isSubmitting = ref(false);
+const initialForm = ref(null);
 
 const form = reactive({
   id: null,
@@ -21,9 +22,17 @@ const form = reactive({
 watch(
   () => props.categoryData,
   (newData) => {
-    if (newData) {
-      form.id = newData.id;
-      form.name = newData.name;
+    if (newData && props.show) {
+      const data = {
+        id: newData.id,
+        name: newData.name,
+      };
+
+      // isi Form
+      Object.assign(form, data);
+
+      // simpan Snapshot
+      initialForm.value = { ...data };
     }
   },
   { immediate: true },
@@ -42,6 +51,15 @@ const handleSubmit = async () => {
     isSubmitting.value = false;
   }
 };
+
+watch(
+  () => props.show,
+  (isOpen) => {
+    if (!isOpen && initialForm.value) {
+      Object.assign(form, initialForm.value);
+    }
+  },
+);
 </script>
 
 <template>

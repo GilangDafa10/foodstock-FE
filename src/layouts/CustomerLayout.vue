@@ -16,7 +16,7 @@ const menuItems = ref([
   { label: "My Profile", path: "/customer/profile", icon: User },
   { label: "My Addresses", path: "/customer/address", icon: MapPinned },
   { label: "My Orders", path: "/customer/orders", icon: ListOrdered },
-  { label: "Buy Products", path: "/categories", icon: ShoppingCart },
+  { label: "My Cart", path: "/customer/cart", icon: ShoppingCart },
 ]);
 
 const logout = async () => {

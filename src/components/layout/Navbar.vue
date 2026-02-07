@@ -1,12 +1,20 @@
 <script setup>
 import { ref, computed } from "vue";
-import { ChefHat, User, LogOut } from "lucide-vue-next";
+import { ChefHat, User, LogOut, ShoppingCart } from "lucide-vue-next";
 import { useAuthStore } from "@/stores/auth.store";
 import { useRoleNavigation } from "@/utils/useRoleNavigation";
 
 const auth = useAuthStore();
 const showDropdown = ref(false);
 const { getPageByRole } = useRoleNavigation();
+
+// Navigation items - mudah untuk di-scale dan maintain
+const navigationItems = [
+  { label: "Home", path: "/" },
+  { label: "Our Products", path: "/products" },
+  { label: "Why Us", path: "/why-us" },
+  { label: "Contact Us", path: "/contact" },
+];
 
 // Navigasi dinamis berdasarkan role user
 const dashboardLink = computed(() => {
@@ -43,40 +51,13 @@ const logout = async () => {
       <div class="hidden items-center md:block mr-20">
         <nav aria-label="Global" class="flex justify-center">
           <ul class="flex items-center justify-center gap-6 text-md">
-            <li>
-              <a
+            <li v-for="item in navigationItems" :key="item.path">
+              <RouterLink
+                :to="item.path"
                 class="font-medium text-md text-gray-900 transition hover:text-gray-600"
-                href="#"
               >
-                Home
-              </a>
-            </li>
-
-            <li>
-              <a
-                class="font-medium text-md text-gray-900 transition hover:text-gray-600"
-                href="#"
-              >
-                Our Products
-              </a>
-            </li>
-
-            <li>
-              <a
-                class="font-medium text-md text-gray-900 transition hover:text-gray-600"
-                href="#"
-              >
-                Why Us
-              </a>
-            </li>
-
-            <li>
-              <a
-                class="font-medium text-md text-gray-900 transition hover:text-gray-600"
-                href="#"
-              >
-                Contact Us
-              </a>
+                {{ item.label }}
+              </RouterLink>
             </li>
           </ul>
         </nav>
@@ -116,6 +97,13 @@ const logout = async () => {
 
             <div class="px-4 py-3 text-sm text-gray-700 border-b">
               <RouterLink :to="dashboardLink">Dashboard</RouterLink>
+            </div>
+
+            <div
+              v-if="auth.user?.role_id === 2"
+              class="px-4 py-3 text-sm text-gray-700 border-b"
+            >
+              <RouterLink to="/customer/cart">Keranjang</RouterLink>
             </div>
 
             <button

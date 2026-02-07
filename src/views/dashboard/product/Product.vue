@@ -47,11 +47,10 @@ const formatRupiah = (value) => {
 };
 
 // --- ACTIONS ---
-const fetchProducts = async () => {
+const fetchProducts = async (force = false) => {
   isLoading.value = true;
   try {
-    // ADMIN → tanpa force, gunakan cache jika sudah ada
-    await productStore.fetchProduct();
+    await productStore.fetchProduct(force);
   } catch (error) {
     console.error("Gagal ambil data:", error);
   } finally {
@@ -80,7 +79,7 @@ const confirmDelete = async (id) => {
 
 // Callback sukses create / edit
 const handleSuccess = async () => {
-  await fetchProducts();
+  await fetchProducts(true);
 };
 
 onMounted(fetchProducts);

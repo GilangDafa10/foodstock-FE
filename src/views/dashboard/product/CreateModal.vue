@@ -92,6 +92,11 @@ const handleSubmit = async () => {
   }
 };
 
+const handleClose = () => {
+  resetForm();
+  emit("close");
+};
+
 watch(
   () => props.show,
   (newVal) => {
@@ -116,7 +121,7 @@ watch(
         <h3 class="font-semibold text-lg text-gray-800 dark:text-white">
           Tambah Produk Baru
         </h3>
-        <button @click="$emit('close')">
+        <button @click="handleClose">
           <X class="size-5 text-gray-400 cursor-pointer hover:text-gray-600" />
         </button>
       </div>
@@ -252,7 +257,7 @@ watch(
         >
           <button
             type="button"
-            @click="$emit('close')"
+            @click="handleClose"
             class="px-4 py-2 text-gray-600 hover:bg-gray-100 rounded-lg dark:text-gray-300 dark:hover:bg-gray-800 transition-colors"
           >
             Batal

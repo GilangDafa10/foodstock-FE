@@ -7,15 +7,23 @@ import AuthLayout from '@/layouts/AuthLayout.vue'
 import DashboardLayout from '@/layouts/DashboardLayout.vue'
 
 // Pages
-import Home from '@/pages/Home.vue'
+import Home from '@/layouts/HomeLayout.vue'
 import Login from '@/views/auth/Login.vue'
 import Register from '@/views/auth/Register.vue'
 import Customer from '@/layouts/CustomerLayout.vue'
 import CustomerPage from '@/pages/Customer.vue'
+import LandingPage from '@/pages/Home.vue'
+import ProductPage from '@/pages/Product.vue'
 
 // Customer Pages
 import CustomerOrder from '@/views/customer/CustOrders.vue'
 import CustomerAddress from '@/views/customer/address/CustAddress.vue'
+import CustomerCart from '@/layouts/CartCustomerLayout.vue'
+import Cart from "@/pages/CartCustomer.vue"
+
+// Checkout Pages
+import CheckoutInput from '@/pages/CoInput.vue'
+import CheckoutReview from '@/pages/CoReview.vue'
 
 // Admin Pages
 import Dashboard from '@/views/dashboard/Dashboard.vue'
@@ -31,7 +39,11 @@ const router = createRouter({
         {
             path: '/',
             component: Home,
-            meta: { public: true }
+            meta: { public: true },
+            children: [
+                { path: '', component: LandingPage },
+                { path: 'products', component: ProductPage }
+            ]
         },
 
         // ================= AUTH =================
@@ -73,9 +85,23 @@ const router = createRouter({
             children: [
                 { path: 'profile', component: CustomerPage },
                 { path: 'orders', component: CustomerOrder },
-                { path: 'address', component: CustomerAddress }
+                { path: 'address', component: CustomerAddress },
+                { path: 'cart', component: Cart },
+                { path: 'checkout', component: CheckoutInput },
+                { path: 'checkout/review', component: CheckoutReview },
             ]
-        }
+        },
+
+        // {
+        //     path: '/checkout',
+        //     meta: {
+        //         requiresAuth: true,
+        //         role: ROLES.CUSTOMER
+        //     },
+        //     childern: [
+        //         { path: '', component: CheckoutInput },
+        //     ]
+        // }
     ]
 })
 

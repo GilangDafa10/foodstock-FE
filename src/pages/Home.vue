@@ -8,11 +8,9 @@ import TrustedSection from "@/views/homepage/TrustedSection.vue";
 </script>
 
 <template>
-  <HomeLayout>
-    <HeroSection />
-    <ProductSection />
-    <ValueSection />
-    <OrderSection />
-    <TrustedSection />
-  </HomeLayout>
+  <HeroSection />
+  <ProductSection />
+  <ValueSection />
+  <OrderSection />
+  <TrustedSection />
 </template>

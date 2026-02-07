@@ -13,6 +13,7 @@ const emit = defineEmits(["close", "success"]);
 
 const isSubmitting = ref(false);
 const categories = ref([]);
+const initialForm = ref(null);
 
 // State khusus untuk File
 const selectedFile = ref(null);
@@ -42,32 +43,34 @@ watch(
   () => props.productData,
   (newProduct) => {
     if (newProduct && props.show) {
-      // 1. Isi form dengan data lama
-      form.name = newProduct.name;
-      form.category_id = newProduct.category_id;
-      form.price = newProduct.price;
-      form.unit = newProduct.unit;
-      form.description = newProduct.description;
+      const data = {
+        name: newProduct.name,
+        category_id: newProduct.category_id,
+        price: newProduct.price,
+        unit: newProduct.unit,
+        description: newProduct.description,
+      };
 
-      // 2. Reset file selection
+      // 1️⃣ isi form
+      Object.assign(form, data);
+
+      // 2️⃣ simpan snapshot (deep clone)
+      initialForm.value = JSON.parse(JSON.stringify(data));
+
+      // 3️⃣ reset file
       selectedFile.value = null;
 
-      // 3. Set Preview Gambar Lama (Handle logic URL relative/absolute)
+      // 4️⃣ preview image
       if (newProduct.image_url) {
-        // Cek apakah URL sudah lengkap (http) atau relative path
-        if (newProduct.image_url.startsWith("http")) {
-          previewUrl.value = newProduct.image_url;
-        } else {
-          // Bersihkan path jika ada prefix '/storage/' ganda, lalu gabung
-          const cleanPath = newProduct.image_url.replace(/^\/?storage\//, "");
-          previewUrl.value = `http://localhost:8000/storage/${cleanPath}`;
-        }
+        previewUrl.value = newProduct.image_url.startsWith("http")
+          ? newProduct.image_url
+          : `http://localhost:8000/storage/${newProduct.image_url.replace(/^\/?storage\//, "")}`;
       } else {
         previewUrl.value = null;
       }
     }
   },
-  { immediate: true }, // Jalankan langsung saat komponen di-mount jika prop sudah ada
+  { immediate: true },
 );
 
 // Handle saat user memilih file BARU
@@ -125,9 +128,19 @@ const handleSubmit = async () => {
 
 watch(
   () => props.show,
-  (newVal) => {
-    if (newVal && categories.value.length === 0) {
+  (isOpen) => {
+    if (!isOpen && initialForm.value) {
+      // Restore form
+      Object.assign(form, initialForm.value);
       fetchCategories();
+
+      // Reset file & preview
+      selectedFile.value = null;
+      previewUrl.value = props.productData?.image_url
+        ? props.productData.image_url.startsWith("http")
+          ? props.productData.image_url
+          : `http://localhost:8000/storage/${props.productData.image_url.replace(/^\/?storage\//, "")}`
+        : null;
     }
   },
 );

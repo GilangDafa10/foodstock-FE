@@ -15,5 +15,8 @@ export default {
     },
     deleteAddress(addressId) {
         return api.delete(`/addresses/${addressId}`)
+    },
+    checkOut(payload) {
+        return api.post('/checkout', payload)
     }
 }

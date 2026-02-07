@@ -52,6 +52,11 @@ const handleSubmit = async () => {
   }
 };
 
+const handleClose = () => {
+  resetForm();
+  emit("close");
+};
+
 onMounted(() => {
   fetchProducts();
 });
@@ -71,7 +76,7 @@ onMounted(() => {
         <h3 class="font-semibold text-lg text-gray-800 dark:text-white">
           Kelola Stok Produk
         </h3>
-        <button @click="$emit('close')">
+        <button @click="handleClose">
           <X class="size-5 text-gray-400 cursor-pointer" />
         </button>
       </div>
@@ -157,7 +162,7 @@ onMounted(() => {
         <div class="flex justify-end gap-3 pt-4">
           <button
             type="button"
-            @click="$emit('close')"
+            @click="handleClose"
             class="px-4 py-2 text-gray-600 hover:bg-gray-100 rounded-lg"
           >
             Batal
