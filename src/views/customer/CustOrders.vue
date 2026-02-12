@@ -18,6 +18,16 @@ const fetchOrders = async () => {
   }
 };
 
+const cancelOrder = async (orderId) => {
+  try {
+    if (!confirm("Yakin ingin cancel orderan ini?")) return;
+    await CustService.cancelOrder(orderId);
+    fetchOrders();
+  } catch (error) {
+    console.error("Failed to cancel order:", error);
+  }
+};
+
 onMounted(() => {
   fetchOrders();
 });
@@ -129,13 +139,38 @@ const statusClass = (status) => {
 
         <!-- Footer -->
         <div
-          class="flex flex-col md:flex-row md:items-center md:justify-between mt-4 pt-4 border-t"
+          class="flex flex-col md:flex-row md:items-center md:justify-between mt-4 pt-4"
         >
           <div class="text-sm text-gray-500">
             Ship to: {{ order.shipping_address }}, {{ order.city }}
           </div>
           <div class="text-lg font-semibold text-gray-800 mt-2 md:mt-0">
             Total: {{ formatCurrency(order.total_price) }}
+          </div>
+        </div>
+
+        <!-- Button Action -->
+        <div
+          class="flex flex-col md:flex-row md:items-center md:justify-end mt-4 pt-4 border-t"
+        >
+          <div class="flex justify-center items-center gap-3">
+            <button
+              class="cursor-pointer bg-amber-500 text-white px-4 py-1 rounded-xl"
+            >
+              Bayar
+            </button>
+            <button
+              @click="cancelOrder(order.id)"
+              :disabled="order.status === 'cancelled'"
+              :class="
+                order.status === 'cancelled'
+                  ? 'cursor-not-allowed opacity-50'
+                  : 'cursor-pointer'
+              "
+              class="bg-red-600 text-white px-4 py-1 rounded-xl"
+            >
+              Cancel
+            </button>
           </div>
         </div>
       </div>

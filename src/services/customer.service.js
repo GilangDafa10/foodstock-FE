@@ -18,5 +18,8 @@ export default {
     },
     checkOut(payload) {
         return api.post('/checkout', payload)
+    },
+    cancelOrder(orderId) {
+        return api.post(`/orders/${orderId}/cancel`)
     }
 }

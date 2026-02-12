@@ -29,7 +29,7 @@ const logout = async () => {
 <template>
   <section class="bg-gray-900 min-h-screen">
     <div class="flex gap-4 px-4 sm:px-6 lg:px-16 py-16">
-      <aside class="w-80 bg-white rounded-lg shadow-lg p-6">
+      <aside class="w-80 bg-white rounded-lg shadow-lg p-6 self-start">
         <ul>
           <li v-for="item in menuItems" :key="item.label" class="mb-2">
             <router-link
