@@ -32,7 +32,7 @@ const submitCheckout = async () => {
     checkoutStore.reset();
     const orderId = res.data.data?.id || res.data.id;
 
-    router.push(`/checkout/success/${orderId}`);
+    router.push(`/customer/orders`);
   } catch (err) {
     alert(err.response?.data?.message || "Checkout gagal");
   } finally {

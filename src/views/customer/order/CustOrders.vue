@@ -2,10 +2,19 @@
 import { Loader2 } from "lucide-vue-next";
 import { ref, onMounted } from "vue";
 import CustService from "@/services/customer.service";
+import PaymentModal from "./PaymentModal.vue";
 import { useAuthStore } from "@/stores/auth.store";
 
 const isLoading = ref(false);
 const orders = ref([]);
+const showPaymentModal = ref(false);
+const selectedOrderId = ref(null);
+
+const openPaymentModal = (orderId) => {
+  selectedOrderId.value = orderId;
+  showPaymentModal.value = true;
+};
+
 const fetchOrders = async () => {
   isLoading.value = true;
   try {
@@ -47,13 +56,13 @@ const formatCurrency = (value) =>
 
 const statusClass = (status) => {
   switch (status) {
-    case "completed":
+    case "paid":
       return "bg-green-100 text-green-700";
     case "processing":
       return "bg-blue-100 text-blue-700";
     case "cancelled":
       return "bg-red-100 text-red-700";
-    default:
+    case "pending":
       return "bg-gray-100 text-gray-600";
   }
 };
@@ -155,9 +164,22 @@ const statusClass = (status) => {
         >
           <div class="flex justify-center items-center gap-3">
             <button
-              class="cursor-pointer bg-amber-500 text-white px-4 py-1 rounded-xl"
+              @click="openPaymentModal(order.id)"
+              :disabled="
+                order.status === 'cancelled' || order.status === 'paid'
+              "
+              :class="
+                order.status === 'cancelled' || order.status === 'paid'
+                  ? 'cursor-not-allowed opacity-50 bg-gray-400'
+                  : 'cursor-pointer bg-amber-500 hover:bg-amber-600'
+              "
+              class="text-white px-4 py-1 rounded-xl transition"
             >
-              Bayar
+              {{
+                order.payment && order.payment.status === "pending"
+                  ? "Lanjutkan Pembayaran"
+                  : "Bayar"
+              }}
             </button>
             <button
               @click="cancelOrder(order.id)"
@@ -167,7 +189,7 @@ const statusClass = (status) => {
                   ? 'cursor-not-allowed opacity-50'
                   : 'cursor-pointer'
               "
-              class="bg-red-600 text-white px-4 py-1 rounded-xl"
+              class="bg-red-600 hover:bg-red-700 text-white px-4 py-1 rounded-xl transition"
             >
               Cancel
             </button>
@@ -176,4 +198,11 @@ const statusClass = (status) => {
       </div>
     </div>
   </div>
+
+  <PaymentModal
+    :show="showPaymentModal"
+    :orderId="selectedOrderId"
+    @close="showPaymentModal = false"
+    @success="fetchOrders"
+  />
 </template>

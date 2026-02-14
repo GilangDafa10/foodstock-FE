@@ -21,5 +21,14 @@ export default {
     },
     cancelOrder(orderId) {
         return api.post(`/orders/${orderId}/cancel`)
+    },
+    createPayment(orderId) {
+        return api.post('/payments', {
+            order_id: orderId,
+            payment_method: 'snap'
+        })
+    },
+    retryPayment(orderId) {
+        return api.post(`/payments/${orderId}/retry`)
     }
 }

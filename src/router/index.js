@@ -16,14 +16,14 @@ import LandingPage from '@/pages/Home.vue'
 import ProductPage from '@/pages/Product.vue'
 
 // Customer Pages
-import CustomerOrder from '@/views/customer/CustOrders.vue'
+import CustomerOrder from '@/views/customer/order/CustOrders.vue'
 import CustomerAddress from '@/views/customer/address/CustAddress.vue'
 import CustomerCart from '@/layouts/CartCustomerLayout.vue'
 import Cart from "@/pages/CartCustomer.vue"
 
 // Checkout Pages
-import CheckoutInput from '@/pages/CoInput.vue'
-import CheckoutReview from '@/pages/CoReview.vue'
+import CheckoutInput from '@/views/customer/checkout/CoInput.vue'
+import CheckoutReview from '@/views/customer/checkout/CoReview.vue'
 
 // Admin Pages
 import Dashboard from '@/views/dashboard/Dashboard.vue'
